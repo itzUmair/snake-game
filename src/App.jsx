@@ -1,5 +1,13 @@
+import Canvas from "./components/Canvas";
+import Titlebar from "./components/Titlebar";
+
 function App() {
-  return <h1>Hello world</h1>;
+  return (
+    <>
+      <Titlebar />
+      <Canvas />
+    </>
+  );
 }
 
 export default App;
