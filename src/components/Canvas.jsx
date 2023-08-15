@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import GameOver from "./GameOver";
+import Gamepad from "./Gamepad";
 
 const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   const [gameReset, setGameReset] = useState(0);
@@ -7,15 +8,15 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
     { x: 1, y: 0 },
     { x: 0, y: 0 },
   ]);
-
   const [gameOver, setGameOver] = useState(false);
-
   const [food, setFood] = useState({ x: 10, y: 10 });
-
   const lastMoveRef = useRef("s");
   const moveCooldown = useRef(0);
-
   const [lastMove, setLastMove] = useState("d");
+
+  const mobileMoveRegisterer = (move) => {
+    lastMoveRef.current = move;
+  };
 
   const isBitingSelf = () => {
     for (let i = 1; i < snake.length; i++) {
@@ -80,24 +81,24 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
     setSnake(tempSnake);
   };
 
-  const updateLastMoveRef = (e) => {
+  const updateLastMoveRef = (move) => {
     if (Date.now() - moveCooldown.current < 50 * gameSettings.gameSpeed) return;
     moveCooldown.current = Date.now();
 
-    if (lastMoveRef.current === "d" && e.key !== "a") {
-      lastMoveRef.current = e.key;
+    if (lastMoveRef.current === "d" && move !== "a") {
+      lastMoveRef.current = move;
       return;
     }
-    if (lastMoveRef.current === "s" && e.key !== "w") {
-      lastMoveRef.current = e.key;
+    if (lastMoveRef.current === "s" && move !== "w") {
+      lastMoveRef.current = move;
       return;
     }
-    if (lastMoveRef.current === "a" && e.key !== "d") {
-      lastMoveRef.current = e.key;
+    if (lastMoveRef.current === "a" && move !== "d") {
+      lastMoveRef.current = move;
       return;
     }
-    if (lastMoveRef.current === "w" && e.key !== "s") {
-      lastMoveRef.current = e.key;
+    if (lastMoveRef.current === "w" && move !== "s") {
+      lastMoveRef.current = move;
       return;
     }
   };
@@ -111,7 +112,9 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   });
 
   useEffect(() => {
-    const keyListener = window.addEventListener("keydown", updateLastMoveRef);
+    const keyListener = window.addEventListener("keydown", (e) =>
+      updateLastMoveRef(e.key)
+    );
 
     return () => window.removeEventListener("keydown", keyListener);
   });
@@ -129,44 +132,51 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
       { x: 1, y: 0 },
       { x: 0, y: 0 },
     ]);
+    setFood({ x: 10, y: 10 });
     lastMoveRef.current = "s";
     setScore(0);
   }, [gameReset]);
 
   return (
-    <div className="relative w-11/12 h-[25rem] md:w-[35rem] md:h-[35rem] bg-clr-950 mx-auto grid grid-cols-20 grid-rows-20">
-      {Array.from({ length: 20 * 20 }).map((_, index) => {
-        const row = Math.floor(index / 20);
-        const col = index % 20;
-        const isSnakePart = snake.some(
-          (part) => part.y === row && part.x === col
-        );
-        const isHead = snake[0].y === row && snake[0].x === col;
-        const isFood = food.y === row && food.x === col;
+    <>
+      <div className="relative w-11/12 h-[25rem] md:w-[35rem] md:h-[35rem] bg-clr-950 mx-auto grid grid-cols-20 grid-rows-20">
+        {Array.from({ length: 20 * 20 }).map((_, index) => {
+          const row = Math.floor(index / 20);
+          const col = index % 20;
+          const isSnakePart = snake.some(
+            (part) => part.y === row && part.x === col
+          );
+          const isHead = snake[0].y === row && snake[0].x === col;
+          const isFood = food.y === row && food.x === col;
 
-        return (
-          <div
-            key={index}
-            className={`${
-              isSnakePart
-                ? isHead
-                  ? "bg-clr-100/40"
-                  : "bg-clr-100"
-                : isFood
-                ? "bg-clr-600"
-                : ""
-            }`}
-          ></div>
-        );
-      })}
-      {gameOver && (
-        <GameOver
-          setGameReset={setGameReset}
-          setIsPlaying={setIsPlaying}
-          setGameOver={setGameOver}
-        />
+          return (
+            <div
+              key={index}
+              className={`${
+                isSnakePart
+                  ? isHead
+                    ? "bg-clr-100/40"
+                    : "bg-clr-100"
+                  : isFood
+                  ? "bg-clr-600"
+                  : ""
+              }`}
+            ></div>
+          );
+        })}
+
+        {gameOver && (
+          <GameOver
+            setGameReset={setGameReset}
+            setIsPlaying={setIsPlaying}
+            setGameOver={setGameOver}
+          />
+        )}
+      </div>
+      {window.innerWidth < 1024 && (
+        <Gamepad updateLastMoveRef={updateLastMoveRef} />
       )}
-    </div>
+    </>
   );
 };
 
