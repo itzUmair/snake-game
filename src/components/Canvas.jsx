@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Canvas = () => {
   const [snake, setSnake] = useState([
@@ -7,10 +7,11 @@ const Canvas = () => {
   ]);
 
   const [gameSettings, setGameSettings] = useState({
-    gameSpeed: 4,
+    gameSpeed: 1,
   });
 
-  const [moveCooldown, setMoveCooldown] = useState(false);
+  const lastMoveRef = useRef("s");
+  const moveCooldown = useRef(0);
 
   const [lastMove, setLastMove] = useState("d");
 
@@ -55,22 +56,28 @@ const Canvas = () => {
     setSnake(tempSnake);
   };
 
-  const updateLastMove = (e) => {
-    if (moveCooldown) return;
-    if (lastMove === "d" && e.key !== "a") {
-      setLastMove(e.key);
+  const updateLastMoveRef = (e) => {
+    if (Date.now() - moveCooldown.current < 50 * gameSettings.gameSpeed) return;
+    moveCooldown.current = Date.now();
+
+    if (lastMoveRef.current === "d" && e.key !== "a") {
+      lastMoveRef.current = e.key;
       return;
-    } else if (lastMove === "s" && e.key !== "w") {
-      setLastMove(e.key);
+    }
+    if (lastMoveRef.current === "s" && e.key !== "w") {
+      lastMoveRef.current = e.key;
       return;
-    } else if (lastMove === "a" && e.key !== "d") {
-      setLastMove(e.key);
+    }
+    if (lastMoveRef.current === "a" && e.key !== "d") {
+      lastMoveRef.current = e.key;
       return;
-    } else if (lastMove === "w" && e.key !== "s") {
-      setLastMove(e.key);
+    }
+    if (lastMoveRef.current === "w" && e.key !== "s") {
+      lastMoveRef.current = e.key;
       return;
     }
   };
+
   useEffect(() => {
     const gameLoop = setInterval(updateSnake, 50 * gameSettings.gameSpeed);
 
@@ -80,8 +87,17 @@ const Canvas = () => {
   });
 
   useEffect(() => {
-    const keyListener = window.addEventListener("keydown", updateLastMove);
+    const keyListener = window.addEventListener("keydown", updateLastMoveRef);
+
     return () => window.removeEventListener("keydown", keyListener);
+  });
+
+  useEffect(() => {
+    const moveUpdateInterval = setInterval(
+      setLastMove(lastMoveRef.current),
+      50 * gameSettings.gameSpeed
+    );
+    return () => clearInterval(moveUpdateInterval);
   });
 
   return (
