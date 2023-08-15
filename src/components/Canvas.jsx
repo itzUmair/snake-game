@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import GameOver from "./GameOver";
 
 const Canvas = ({ score, setScore }) => {
   const [snake, setSnake] = useState([
@@ -9,6 +10,8 @@ const Canvas = ({ score, setScore }) => {
   const [gameSettings, setGameSettings] = useState({
     gameSpeed: 4,
   });
+
+  const [gameOver, setGameOver] = useState(false);
 
   const [food, setFood] = useState({ x: 10, y: 10 });
 
@@ -50,16 +53,18 @@ const Canvas = ({ score, setScore }) => {
       snake[0].y === 20 ||
       snake[0].y < 0
     ) {
-      localStorage.setItem("hi-score", JSON.stringify(score));
-      return false;
+      if (score > JSON.parse(localStorage.getItem("hi-score"))) {
+        localStorage.setItem("hi-score", JSON.stringify(score));
+      }
+      setGameOver(true);
     } else if (isBitingSelf()) {
-      return false;
+      setGameOver(true);
     }
-    return true;
   };
 
   const updateSnake = () => {
-    if (!gameRunning()) {
+    gameRunning();
+    if (gameOver) {
       return;
     }
     let tempSnake = [...snake];
@@ -148,6 +153,7 @@ const Canvas = ({ score, setScore }) => {
           ></div>
         );
       })}
+      {gameOver && <GameOver />}
     </div>
   );
 };
