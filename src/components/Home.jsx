@@ -7,6 +7,7 @@ StartSFX.load();
 
 const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
   const [gameSpeed, setGameSpeed] = useState(4);
+
   return (
     <div className="px-4 lg:px-16 flex flex-col items-center justify-center">
       <img src={Logo} alt="Snake Retro" className=" w-96" />
@@ -26,7 +27,9 @@ const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
           max={5}
           step={1}
           value={gameSpeed}
-          onChange={(e) => setGameSpeed(e.target.value)}
+          onChange={(e) => {
+            setGameSpeed(e.target.value);
+          }}
           className="w-full h-2 bg-clr-950 rounded-lg appearance-none cursor-pointer accent-clr-600"
         />
       </div>

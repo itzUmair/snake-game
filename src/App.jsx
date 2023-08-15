@@ -9,6 +9,7 @@ function App() {
   const [gameSettings, setGameSettings] = useState({
     gameSpeed: 4,
   });
+
   return (
     <>
       {isPlaying ? (

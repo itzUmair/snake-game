@@ -1,15 +1,13 @@
-import { useEffect } from "react";
 import Logo from "../assets/logo.svg";
 import { useState } from "react";
 
 const Titlebar = ({ score }) => {
-  const [hiScore, setHiScore] = useState(0);
+  const [hiScore, setHiScore] = useState(
+    JSON.parse(localStorage.getItem("hi-score")) || 0
+  );
   if (score > hiScore) {
     setHiScore(score);
   }
-  useEffect(() => {
-    setHiScore(JSON.parse(localStorage.getItem("hi-score")) || 0);
-  }, []);
 
   return (
     <nav className="flex items-center justify-between px-4 lg:px-16">

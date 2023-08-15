@@ -1,13 +1,21 @@
 import { useEffect, useRef, useState } from "react";
 import GameOver from "./GameOver";
 import Gamepad from "./Gamepad";
+import PauseMenu from "./PauseMenu";
+import PauseIcon from "../assets/pause.svg";
 import Point from "../assets/point.mp3";
 import Fail from "../assets/fail.mp3";
+import Pause from "../assets/pause.mp3";
+import UnPause from "../assets/unpause.mp3";
 
 const PointSFX = new Audio(Point);
 PointSFX.load();
 const FailSFX = new Audio(Fail);
 FailSFX.load();
+const PauseSFX = new Audio(Pause);
+PauseSFX.load();
+const UnPauseSFX = new Audio(UnPause);
+UnPauseSFX.load();
 
 const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   const [gameReset, setGameReset] = useState(0);
@@ -20,6 +28,7 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   const lastMoveRef = useRef("s");
   const moveCooldown = useRef(0);
   const [lastMove, setLastMove] = useState("d");
+  const [isPaused, setIsPaused] = useState(false);
 
   const isBitingSelf = () => {
     for (let i = 1; i < snake.length; i++) {
@@ -29,6 +38,11 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
     }
     return false;
   };
+
+  useEffect(() => {
+    if (isPaused) return;
+    UnPauseSFX.play();
+  }, [isPaused]);
 
   const generateFood = () => {
     const newFoodCoordinates = {
@@ -70,6 +84,7 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   }, [gameOver]);
 
   const updateSnake = () => {
+    if (isPaused) return;
     gameRunning();
     if (gameOver) {
       return;
@@ -94,21 +109,23 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
     if (Date.now() - moveCooldown.current < 50 * gameSettings.gameSpeed) return;
     moveCooldown.current = Date.now();
 
-    if (lastMoveRef.current === "d" && move !== "a") {
-      lastMoveRef.current = move;
-      return;
-    }
-    if (lastMoveRef.current === "s" && move !== "w") {
-      lastMoveRef.current = move;
-      return;
-    }
-    if (lastMoveRef.current === "a" && move !== "d") {
-      lastMoveRef.current = move;
-      return;
-    }
-    if (lastMoveRef.current === "w" && move !== "s") {
-      lastMoveRef.current = move;
-      return;
+    if (["a", "s", "d", "w"].includes(move)) {
+      if (lastMoveRef.current === "d" && move !== "a") {
+        lastMoveRef.current = move;
+        return;
+      }
+      if (lastMoveRef.current === "s" && move !== "w") {
+        lastMoveRef.current = move;
+        return;
+      }
+      if (lastMoveRef.current === "a" && move !== "d") {
+        lastMoveRef.current = move;
+        return;
+      }
+      if (lastMoveRef.current === "w" && move !== "s") {
+        lastMoveRef.current = move;
+        return;
+      }
     }
   };
 
@@ -149,6 +166,15 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   return (
     <>
       <div className="relative w-11/12 h-[25rem] md:w-[35rem] md:h-[35rem] bg-clr-950 mx-auto grid grid-cols-20 grid-rows-20">
+        <button
+          onClick={() => {
+            !isPaused && PauseSFX.play();
+            setIsPaused((prevState) => !prevState);
+          }}
+          className="absolute top-4 right-4 p2 w-4 h-4"
+        >
+          <img src={PauseIcon} alt="pause" />
+        </button>
         {Array.from({ length: 20 * 20 }).map((_, index) => {
           const row = Math.floor(index / 20);
           const col = index % 20;
@@ -180,6 +206,9 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
             setIsPlaying={setIsPlaying}
             setGameOver={setGameOver}
           />
+        )}
+        {isPaused && (
+          <PauseMenu setIsPaused={setIsPaused} setIsPlaying={setIsPlaying} />
         )}
       </div>
       {window.innerWidth < 1024 && (
