@@ -1,6 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 import GameOver from "./GameOver";
 import Gamepad from "./Gamepad";
+import Point from "../assets/point.mp3";
+import Fail from "../assets/fail_2.mp3";
+import Click from "../assets/click.mp3";
+
+const PointSFX = new Audio(Point);
+PointSFX.load();
+const FailSFX = new Audio(Fail);
+FailSFX.load();
+const ClickSFX = new Audio(Click);
+ClickSFX.load();
 
 const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   const [gameReset, setGameReset] = useState(0);
@@ -13,10 +23,6 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   const lastMoveRef = useRef("s");
   const moveCooldown = useRef(0);
   const [lastMove, setLastMove] = useState("d");
-
-  const mobileMoveRegisterer = (move) => {
-    lastMoveRef.current = move;
-  };
 
   const isBitingSelf = () => {
     for (let i = 1; i < snake.length; i++) {
@@ -39,6 +45,7 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
     if (snake[0].x === food.x && snake[0].y === food.y) {
       generateFood();
       setScore((prevScore) => prevScore + 1);
+      PointSFX.play();
       return true;
     }
     return false;
@@ -59,6 +66,11 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
       setGameOver(true);
     }
   };
+
+  useEffect(() => {
+    if (gameOver === false) return;
+    FailSFX.play();
+  }, [gameOver]);
 
   const updateSnake = () => {
     gameRunning();

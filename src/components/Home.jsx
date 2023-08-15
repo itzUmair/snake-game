@@ -1,11 +1,15 @@
 import { useState } from "react";
 import Logo from "../assets/logo.svg";
+import Click from "../assets/click.mp3";
+
+const ClickSFX = new Audio(Click);
+ClickSFX.load();
 
 const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
   const [gameSpeed, setGameSpeed] = useState(4);
   return (
     <div className="px-4 lg:px-16 flex flex-col items-center justify-center">
-      <img src={Logo} alt="Snake Retro" />
+      <img src={Logo} alt="Snake Retro" className=" w-96" />
       <div className=" w-[80vw] lg:w-[30rem]">
         <label
           htmlFor="length"
@@ -29,6 +33,7 @@ const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
       <button
         onClick={() => {
           setGameSettings({ ...gameSettings, gameSpeed: gameSpeed });
+          ClickSFX.play();
           setIsPlaying(true);
         }}
         className="bg-clr-600 py-2 px-4 mt-4 text-clr-100 "
