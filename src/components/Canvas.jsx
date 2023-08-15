@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
 
-const Canvas = () => {
+const Canvas = ({ score, setScore }) => {
   const [snake, setSnake] = useState([
     { x: 1, y: 0 },
     { x: 0, y: 0 },
   ]);
 
   const [gameSettings, setGameSettings] = useState({
-    gameSpeed: 1,
+    gameSpeed: 4,
   });
+
+  const [food, setFood] = useState({ x: 10, y: 10 });
 
   const lastMoveRef = useRef("s");
   const moveCooldown = useRef(0);
@@ -24,6 +26,23 @@ const Canvas = () => {
     return false;
   };
 
+  const generateFood = () => {
+    const newFoodCoordinates = {
+      x: Math.floor(Math.random() * 20),
+      y: Math.floor(Math.random() * 20),
+    };
+    setFood(newFoodCoordinates);
+  };
+
+  const isEatingFood = () => {
+    if (snake[0].x === food.x && snake[0].y === food.y) {
+      generateFood();
+      setScore((prevScore) => prevScore + 1);
+      return true;
+    }
+    return false;
+  };
+
   const gameRunning = () => {
     if (
       snake[0].x === 20 ||
@@ -31,6 +50,7 @@ const Canvas = () => {
       snake[0].y === 20 ||
       snake[0].y < 0
     ) {
+      localStorage.setItem("hi-score", JSON.stringify(score));
       return false;
     } else if (isBitingSelf()) {
       return false;
@@ -52,7 +72,9 @@ const Canvas = () => {
     } else {
       tempSnake.unshift({ x: tempSnake[0].x - 1, y: tempSnake[0].y });
     }
-    tempSnake.pop();
+    if (!isEatingFood()) {
+      tempSnake.pop();
+    }
     setSnake(tempSnake);
   };
 
@@ -109,12 +131,19 @@ const Canvas = () => {
           (part) => part.y === row && part.x === col
         );
         const isHead = snake[0].y === row && snake[0].x === col;
+        const isFood = food.y === row && food.x === col;
 
         return (
           <div
             key={index}
             className={`${
-              isSnakePart ? (isHead ? "bg-clr-100/40" : "bg-clr-100") : ""
+              isSnakePart
+                ? isHead
+                  ? "bg-clr-100/40"
+                  : "bg-clr-100"
+                : isFood
+                ? "bg-clr-600"
+                : ""
             }`}
           ></div>
         );

@@ -2,10 +2,11 @@ import { useEffect } from "react";
 import Logo from "../assets/logo.svg";
 import { useState } from "react";
 
-const Titlebar = () => {
+const Titlebar = ({ score }) => {
   const [hiScore, setHiScore] = useState(0);
-  const [score, setScore] = useState(0);
-
+  if (score > hiScore) {
+    setHiScore(score);
+  }
   useEffect(() => {
     setHiScore(JSON.parse(localStorage.getItem("hi-score")) || 0);
   }, []);
