@@ -1,15 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import GameOver from "./GameOver";
 
-const Canvas = ({ score, setScore }) => {
+const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
+  const [gameReset, setGameReset] = useState(0);
   const [snake, setSnake] = useState([
     { x: 1, y: 0 },
     { x: 0, y: 0 },
   ]);
-
-  const [gameSettings, setGameSettings] = useState({
-    gameSpeed: 4,
-  });
 
   const [gameOver, setGameOver] = useState(false);
 
@@ -127,6 +124,15 @@ const Canvas = ({ score, setScore }) => {
     return () => clearInterval(moveUpdateInterval);
   });
 
+  useEffect(() => {
+    setSnake([
+      { x: 1, y: 0 },
+      { x: 0, y: 0 },
+    ]);
+    lastMoveRef.current = "s";
+    setScore(0);
+  }, [gameReset]);
+
   return (
     <div className="relative w-11/12 h-[25rem] md:w-[35rem] md:h-[35rem] bg-clr-950 mx-auto grid grid-cols-20 grid-rows-20">
       {Array.from({ length: 20 * 20 }).map((_, index) => {
@@ -153,7 +159,13 @@ const Canvas = ({ score, setScore }) => {
           ></div>
         );
       })}
-      {gameOver && <GameOver />}
+      {gameOver && (
+        <GameOver
+          setGameReset={setGameReset}
+          setIsPlaying={setIsPlaying}
+          setGameOver={setGameOver}
+        />
+      )}
     </div>
   );
 };
