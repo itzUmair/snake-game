@@ -1,9 +1,9 @@
 import { useState } from "react";
 import Logo from "../assets/logo.svg";
-import Click from "../assets/click.mp3";
+import Start from "../assets/start.mp3";
 
-const ClickSFX = new Audio(Click);
-ClickSFX.load();
+const StartSFX = new Audio(Start);
+StartSFX.load();
 
 const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
   const [gameSpeed, setGameSpeed] = useState(4);
@@ -33,7 +33,7 @@ const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
       <button
         onClick={() => {
           setGameSettings({ ...gameSettings, gameSpeed: gameSpeed });
-          ClickSFX.play();
+          StartSFX.play();
           setIsPlaying(true);
         }}
         className="bg-clr-600 py-2 px-4 mt-4 text-clr-100 "

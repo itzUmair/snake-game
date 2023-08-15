@@ -2,15 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import GameOver from "./GameOver";
 import Gamepad from "./Gamepad";
 import Point from "../assets/point.mp3";
-import Fail from "../assets/fail_2.mp3";
-import Click from "../assets/click.mp3";
+import Fail from "../assets/fail.mp3";
 
 const PointSFX = new Audio(Point);
 PointSFX.load();
 const FailSFX = new Audio(Fail);
 FailSFX.load();
-const ClickSFX = new Audio(Click);
-ClickSFX.load();
 
 const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
   const [gameReset, setGameReset] = useState(0);
