@@ -7,13 +7,13 @@ const PauseMenu = ({ setIsPaused, setIsPlaying }) => {
           onClick={() => {
             setIsPaused(false);
           }}
-          className=" text-clr-600 hover:bg-clr-100/80 p-2"
+          className="text-xs text-clr-600 hover:bg-clr-100/80 p-2"
         >
           Continue
         </button>
         <button
           onClick={() => setIsPlaying(false)}
-          className=" text-clr-600 hover:bg-clr-100/80 p-2"
+          className="text-xs text-clr-600 hover:bg-clr-100/80 p-2"
         >
           Home
         </button>

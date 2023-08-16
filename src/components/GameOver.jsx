@@ -5,7 +5,7 @@ StartSFX.load();
 
 const GameOver = ({ setGameReset, setIsPlaying, setGameOver }) => {
   return (
-    <div className=" absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-clr-100 text-center flex flex-col items-center justify-center gap-8">
+    <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-clr-100 text-center flex flex-col items-center justify-center gap-8">
       <div className="bg-clr-950">Game Over!</div>
       <div className="bg-clr-950 flex flex-col items-center gap-4">
         <button
