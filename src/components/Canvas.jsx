@@ -171,7 +171,7 @@ const Canvas = ({ score, setScore, gameSettings, setIsPlaying }) => {
             !isPaused && PauseSFX.play();
             setIsPaused((prevState) => !prevState);
           }}
-          className="absolute top-4 right-4 p2 w-4 h-4"
+          className="absolute top-4 right-4 p2 w-6 h-6 "
         >
           <img src={PauseIcon} alt="pause" />
         </button>
