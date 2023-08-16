@@ -6,7 +6,7 @@ const StartSFX = new Audio(Start);
 StartSFX.load();
 
 const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
-  const [gameSpeed, setGameSpeed] = useState(4);
+  const [gameSpeed, setGameSpeed] = useState(3);
 
   return (
     <div className="px-4 lg:px-16 flex flex-col items-center justify-center">
@@ -17,7 +17,7 @@ const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
           className=" mt-4 text-xs text-clr-100 flex justify-between items-center pr-4"
         >
           Game speed
-          <p className="text-sm">{gameSpeed}</p>
+          <p className="text-sm">{6 - gameSpeed}</p>
         </label>
         <input
           type="range"
@@ -30,7 +30,7 @@ const Home = ({ gameSettings, setGameSettings, setIsPlaying }) => {
           onChange={(e) => {
             setGameSpeed(e.target.value);
           }}
-          className="w-full h-2 bg-clr-950 rounded-lg appearance-none cursor-pointer accent-clr-600"
+          className="w-full h-2 bg-clr-950 rounded-lg appearance-none cursor-pointer accent-clr-600 rtl"
         />
       </div>
       <button

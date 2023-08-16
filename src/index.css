@@ -21,3 +21,7 @@
     grid-template-rows: repeat(20, minmax(0, 1fr));
   }
 }
+
+.rtl {
+  direction: rtl;
+}

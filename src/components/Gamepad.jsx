@@ -3,6 +3,7 @@ import Arrow from "../assets/arrow.svg";
 const Gamepad = ({ updateLastMoveRef }) => {
   return (
     <div className="grid grid-cols-3 grid-rows-3 w-1/2 md:w-[35rem] m-auto border-clr-900 border-y-4">
+      <div className="col-start-2 row-start-2 bg-clr-950"></div>
       <button
         onClick={() => updateLastMoveRef("a")}
         className="bg-clr-950 p-2 flex-1 active:bg-clr-900 col-start-1 row-start-2"
